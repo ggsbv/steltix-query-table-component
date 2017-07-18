@@ -6,6 +6,7 @@ define(['knockout'],
                 self.query = ko.observable("");
 
                 self.getTable = function() {
+                    console.log("getTable fired");
                     var query = self.query();
                     var req = {};
                     // empty object to hold our http request
@@ -14,7 +15,6 @@ define(['knockout'],
                     req.username = "demo";
                     req.password = "demo";
                     // authenticate with the system by getting a token
-
                     $.ajax({
                             url: "http://demo.steltix.com/jderest/tokenrequest",
                             // <<- JD Edwards API token service
@@ -43,7 +43,7 @@ define(['knockout'],
                                         "targetType": "table",
                                         "outputType": "GRID_DATA",
                                         "dataServiceType": "BROWSE",
-                                        "maxPageSize": "100",
+                                        "maxPageSize": "10",
                                         "query": {
                                             "autoFind": true,
                                             "condition": []
@@ -62,9 +62,9 @@ define(['knockout'],
                                         console.log(JSON.stringify(data))
                                         // <<- log data to console
                                     })
+                                }
+                    });
                 }
         }
     return model;
-    });
-};
 });
