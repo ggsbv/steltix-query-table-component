@@ -1,13 +1,52 @@
+"use strict";
+
+function RequestedColumn(name)
+{
+    var self = this;
+    self.name = name;
+}
+
+function queryBuilder(table, columns) {
+    if (table === "") {
+        return false;
+    }
+
+    var columnString = "";
+
+    columns.forEach((column, index, array) => {
+        if (column !== "") {
+            if (index === array.length - 1) {
+                columnString += table + "." + column;
+            } else {
+                columnString += table + "." + column + "|";
+            };
+        };
+    });
+    return table + "|" + columnString;
+};
+
 define(['knockout'],
     function(ko) {
         function model(context) {
                 var self = this;
                //viewmodel code goes here
-                self.query = ko.observable("");
+                self.requestedTable = ko.observable("");
+                self.requestedColumns = ko.observableArray([
+                    new RequestedColumn("BNU"),
+                    new RequestedColumn("LFS")
+                ]);
+
+                self.addColumn = function() {
+                    self.requestedColumns.push(new RequestedColumn(""));
+                };
+
+                self.tableData = ko.observableArray([]);
 
                 self.getTable = function() {
-                    console.log("getTable fired");
-                    var query = self.query();
+                    var columnObjects = self.requestedColumns();
+                    var columnArray = columnObjects.map((columnObject) => columnObject.name);
+                    var tableName = self.requestedTable();
+                    var queryString = queryBuilder(tableName, columnArray);
                     var req = {};
                     // empty object to hold our http request
                     req.deviceName = 'aisTester';
@@ -39,8 +78,9 @@ define(['knockout'],
 
                                     var reqData = {
                                         "deviceName": "aisTester",
-                                        "targetName": query,
+                                        "targetName": tableName,
                                         "targetType": "table",
+                                        "returnControlIDs": queryString,
                                         "outputType": "GRID_DATA",
                                         "dataServiceType": "BROWSE",
                                         "maxPageSize": "10",
@@ -60,7 +100,23 @@ define(['knockout'],
                                         data: JSON.stringify(reqData)
                                     }).done(function(data) {
                                         console.log(JSON.stringify(data))
+                                        var myData = data.fs_DATABROWSE_F0101.data.gridData;
                                         // <<- log data to console
+                                        var shapedData = [];
+                                        columnArray.forEach(columnName => {
+                                            var object = {};
+                                            var tableData = [];
+                                            var expectedKey = tableName + "_" + columnName;
+                                            object["heading"] = myData.columns.expectedKey;
+
+                                            myData.rowset.forEach((item) => {
+                                                for (key in item) {
+                                                    if (key === expectedKey) {
+                                                        tableData.push(item[key]);
+                                                    }
+                                                }
+                                            });
+                                        });
                                     })
                                 }
                     });

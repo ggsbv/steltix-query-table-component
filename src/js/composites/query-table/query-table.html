@@ -1,5 +1,20 @@
 <div class="query-table">
     <label for="textInput">Search JDEdwards</label>
-    <input id="textInput" type="text" data-bind="textInput: query"/>
+    <input id="textInput" type="text" data-bind="textInput: requestedTable"/>
+
+    <ul data-bind="foreach: requestedColumns">
+        <li><input data-bind="value: name"></li>
+    </ul>
+
+    <button data-bind="click: addColumn">Add another column</button>
+    <br>
+    <br>
     <button data-bind="click: getTable" type="button" name="search-button">Search</button>
-</div>
+
+<!-- <table>
+    <thead>
+        <tr data-bind="foreach: ">
+            <th data-bind></th>
+        </tr>
+    </thead>
+</table> -->
