@@ -11,10 +11,15 @@
     <br>
     <button data-bind="click: getTable" type="button" name="search-button">Search</button>
 
-<!-- <table>
+<table data-bind="foreach: { data: tableData, as: 'column' }">
     <thead>
-        <tr data-bind="foreach: ">
-            <th data-bind></th>
+        <tr>
+            <th data-bind="text: th"></th>
         </tr>
     </thead>
-</table> -->
+    <tbody data-bind="foreach: { data: td, as: 'row' }">
+        <tr>
+            <td data-bind="text: row"></td>
+        </tr>
+    </tbody>
+</table>

@@ -30,10 +30,10 @@ define(['knockout'],
         function model(context) {
                 var self = this;
                //viewmodel code goes here
-                self.requestedTable = ko.observable("");
+                self.requestedTable = ko.observable("F0101");
                 self.requestedColumns = ko.observableArray([
-                    new RequestedColumn("BNU"),
-                    new RequestedColumn("LFS")
+                    new RequestedColumn("AN8"),
+                    new RequestedColumn("AT1")
                 ]);
 
                 self.addColumn = function() {
@@ -99,24 +99,24 @@ define(['knockout'],
                                         contentType: "application/json",
                                         data: JSON.stringify(reqData)
                                     }).done(function(data) {
-                                        console.log(JSON.stringify(data))
-                                        var myData = data.fs_DATABROWSE_F0101.data.gridData;
-                                        // <<- log data to console
-                                        var shapedData = [];
-                                        columnArray.forEach(columnName => {
-                                            var object = {};
-                                            var tableData = [];
-                                            var expectedKey = tableName + "_" + columnName;
-                                            object["heading"] = myData.columns.expectedKey;
+                                        var myTableObject = "fs_DATABROWSE_" + tableName;
+                                        var myTableData = data[myTableObject].data.gridData;
+                                        console.log(JSON.stringify(myTableData));
 
-                                            myData.rowset.forEach((item) => {
-                                                for (key in item) {
-                                                    if (key === expectedKey) {
-                                                        tableData.push(item[key]);
-                                                    }
-                                                }
+                                        for (let key in myTableData.columns) {
+                                            let object = {};
+
+                                            object['th'] = myTableData.columns[key];
+                                            let rowsetArray = [];
+                                            myTableData.rowset.forEach((row) => {
+                                                rowsetArray.push(row[key]);
                                             });
-                                        });
+                                            object['td'] = rowsetArray;
+                                            self.tableData.push(object);
+                                        };
+                                        console.log(JSON.stringify(self.tableData()));
+
+                                        // <<- log data to console
                                     })
                                 }
                     });
@@ -124,3 +124,14 @@ define(['knockout'],
         }
     return model;
 });
+
+[
+    {
+        th : '',
+        td : ['', '', '']
+    },
+    {
+        th : '',
+        td : ['', '', '']
+    }
+]
