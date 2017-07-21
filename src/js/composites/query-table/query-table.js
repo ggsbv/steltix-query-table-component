@@ -42,6 +42,9 @@ define(['knockout'],
 
                 self.tableData = ko.observableArray([]);
 
+                self.headings = ko.observable([]);
+                self.columns = ko.observable([]);
+
                 self.getTable = function() {
                     var columnObjects = self.requestedColumns();
                     var columnArray = columnObjects.map((columnObject) => columnObject.name);
@@ -99,23 +102,55 @@ define(['knockout'],
                                         contentType: "application/json",
                                         data: JSON.stringify(reqData)
                                     }).done(function(data) {
+                                        self.tableData.removeAll();
                                         var myTableObject = "fs_DATABROWSE_" + tableName;
                                         var myTableData = data[myTableObject].data.gridData;
-                                        console.log(JSON.stringify(myTableData));
+                                        var headings = [];
+                                        var columns = [];
+                                        var headingData = myTableData.columns;
+                                        var rowData = myTableData.rowset;
 
-                                        for (let key in myTableData.columns) {
-                                            let object = {};
+                                        for (let headingKey in headingData) {
+                                            headings.push(headingData[headingKey]);
+                                        }
 
-                                            object['th'] = myTableData.columns[key];
-                                            let rowsetArray = [];
-                                            myTableData.rowset.forEach((row) => {
-                                                rowsetArray.push(row[key]);
-                                            });
-                                            object['td'] = rowsetArray;
-                                            self.tableData.push(object);
-                                        };
-                                        console.log(JSON.stringify(self.tableData()));
-
+                                        rowData.forEach((row) => {
+                                            let holder = [];
+                                            for (let headingKey in headingData) {
+                                                holder.push(row[headingKey]);
+                                            }
+                                            columns.push(holder);
+                                        })
+                                        console.log(JSON.stringify(headings));
+                                        console.log(JSON.stringify(columns));
+                                        // for (let headingKey in headingData) {
+                                        //     headings.push(headingData[headingKey]);
+                                        //     let holder = [];
+                                        //     rowData.forEach((row) => {
+                                        //         for (let columnKey in row) {
+                                        //             if (headingKey === columnKey) {
+                                        //                 holder.push(row[columnKey]);
+                                        //             };
+                                        //         };
+                                        //     });
+                                        //     columns.push(holder);
+                                        // };
+                                        // console.log(JSON.stringify(self.tableData()));
+                                        self.headings(headings);
+                                        self.columns(columns);
+                                        console.log(self.headings());
+                                        console.log(JSON.stringify(self.columns()));
+                                        // for (let key in myTableData.columns) {
+                                        //     let object = {};
+                                        //
+                                        //     object['th'] = myTableData.columns[key];
+                                        //     let rowsetArray = [];
+                                        //     myTableData.rowset.forEach((row) => {
+                                        //         rowsetArray.push(row[key]);
+                                        //     });
+                                        //     object['td'] = rowsetArray;
+                                        //     self.tableData.push(object);
+                                        // };
                                         // <<- log data to console
                                     })
                                 }
@@ -124,14 +159,3 @@ define(['knockout'],
         }
     return model;
 });
-
-[
-    {
-        th : '',
-        td : ['', '', '']
-    },
-    {
-        th : '',
-        td : ['', '', '']
-    }
-]

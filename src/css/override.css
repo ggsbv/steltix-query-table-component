@@ -5,3 +5,23 @@
     Description:
         This is where any of your application specific styles should be included
 */
+
+query-table table {
+    border-collapse: collapse;
+
+}
+
+query-table table, th, td {
+    margin-top: 2em;
+    padding: 0.5em;
+    border: 1px solid black;
+}
+
+query-table tr:nth-child(odd) {
+    background-color: #c2c2d6;
+}
+
+query-table th {
+    background-color: #3d3d5c;
+    color: white;
+}

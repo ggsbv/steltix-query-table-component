@@ -1,7 +1,9 @@
 <div class="query-table">
-    <label for="textInput">Search JDEdwards</label>
+    <label for="textInput">Table:</label>
     <input id="textInput" type="text" data-bind="textInput: requestedTable"/>
-
+    <br>
+    <br>
+    <p>Columns:</p>
     <ul data-bind="foreach: requestedColumns">
         <li><input data-bind="value: name"></li>
     </ul>
@@ -10,16 +12,15 @@
     <br>
     <br>
     <button data-bind="click: getTable" type="button" name="search-button">Search</button>
-
-<table data-bind="foreach: { data: tableData, as: 'column' }">
+<table>
     <thead>
-        <tr>
-            <th data-bind="text: th"></th>
+        <tr data-bind="foreach: { data: headings, as: 'heading' }">
+            <th data-bind="text: heading"></th>
         </tr>
     </thead>
-    <tbody data-bind="foreach: { data: td, as: 'row' }">
-        <tr>
-            <td data-bind="text: row"></td>
+    <tbody data-bind="foreach: { data: columns, as: 'row' }">
+        <tr data-bind="foreach: $data">
+            <td data-bind="text: $data"></td>
         </tr>
     </tbody>
 </table>
